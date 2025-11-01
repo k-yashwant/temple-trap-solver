@@ -4,7 +4,7 @@ from state_node import Node
 from solution import GoalTest
 
 # initial_state = input()
-initial_state="0C0 1D0 2G2 3B1 5H3 6A0 7E0 8F2 8"
+initial_state="0D1 1B2 2C1 3G0 4F2 5A3 6H3 7E3 0"
 initial_state = initial_state.strip().split()
 
 start_node = Node()

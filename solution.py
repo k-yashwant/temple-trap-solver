@@ -1,5 +1,5 @@
 #Print the solution
-from generate_actions import left_dir
+from generate_actions import LEFT
 from tiles import tiles_map
 import numpy as np
 
@@ -22,7 +22,7 @@ def PrintSolution(node, actions=actions):
     exit()
 
 def GoalTest(node):
-    if node.player_level() == 1 and node.player_position() == 0 and any(np.array_equal(left_dir, x) for x in tiles_map[node.state[node.player_position()]].top):
+    if node.player_level() == 1 and node.player_position() == 0 and any(np.array_equal(LEFT, x) for x in tiles_map[node.state[node.player_position()]].top):
         PrintSolution(node)
     else:
         return None
