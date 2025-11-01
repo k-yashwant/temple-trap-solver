@@ -1,0 +1,10 @@
+Easy 
+1: 0C0 1D0 2G2 3B1 5H3 6A0 7E0 8F2 8, path_cost = 11
+
+
+4: 0B1 1D0 2H2 3E1 4G0 5F3 7A0 8C0 3, path_cost = 12
+
+28: 0B1 1D0 2F2 3A0 4E0 5G2 6H0 7C1 5, path_cost = 14
+
+57: 0B2 1C0 3F1 4E0 5A0 6G1 7H0 8D3 4, path_cost = 60
+60: 0F2 1A1 3H2 4B3 5E0 6D2 7C1 8G3 5, path_cost = 190
