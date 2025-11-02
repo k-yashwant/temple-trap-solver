@@ -43,8 +43,10 @@ import numpy as np
 # print(a)
 
 a=[23,3,3,3,3,3,3,123,3,234,'dfg',5,54,654,645,645]
-for i in range(len(a)-1,0,-1):
-    print(a[i])
+# for i in range(len(a)-1,0,-1):
+#     print(a[i])
 
 # a = [np.array([-1,  0]), np.array([ 0, -1])]
 # print((np.array([-1,0]) in np.array(a).all()))
+
+print(a[:-1])

@@ -3,26 +3,30 @@ from generate_actions import LEFT
 from tiles import tiles_map
 import numpy as np
 
-actions = [('Player', 'Left')]
+states = []
 
-def PrintSolution(node, actions=actions):
+def TrackSolution(node):
     path_cost = node.path_cost + 1
     while True:
-        actions.append(node.prev_action)
+        prev_action = node.prev_action
+        states.append(tuple(node.state[:-1]))
+        if node.prev_action == 'level_change':
+            node = node.parent
         if node.parent == None:
             break
         node=node.parent
     
-    for i in range(len(actions)-2, -1, -1):
-        pass
-        print(actions[i], end=" " )
+    states.reverse()
     
-    print()
-    print("Path_cost:", path_cost)
-    exit()
+    final_state = list(states[-1])
+    final_state[-1] = -1
+    final_state = tuple(final_state)
+    states.append(final_state)
+    
+    return states, path_cost
 
 def GoalTest(node):
     if node.player_level() == 1 and node.player_position() == 0 and any(np.array_equal(LEFT, x) for x in tiles_map[node.state[node.player_position()]].top):
-        PrintSolution(node)
+        return TrackSolution(node)
     else:
-        return None
+        return None,  None
