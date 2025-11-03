@@ -128,7 +128,6 @@ if __name__ == "__main__":
 
     # The code below will only run after the GUI window is closed
     if initial_config is not None:
-        print("\nGUI closed. The program can now proceed with the following configuration:")
         print(f"'{initial_config}'")
     else:
         print("\nGUI was closed without providing a configuration.")
