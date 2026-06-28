@@ -1,6 +1,5 @@
 #Contains all functions required for the "frontier" priority queue suitable for working with state node
 
-from math import floor
 
 '''
 class node:
@@ -19,7 +18,7 @@ def getPriority(x, frontier=frontier):
     return node.path_cost
 
 def parent(x):
-    return floor((x-1)/2)
+    return (x-1)//2
 
 def left(x):
     return 2*x+1
@@ -32,10 +31,10 @@ def MinHeapify(x, frontier=frontier, node_positions=node_positions):
     if len(frontier) > 0:
         lowest = x
 
-        if (left(x) < len(frontier) and getPriority(left(x)) < getPriority(lowest)):
+        if (left(x) < len(frontier) and getPriority(left(x), frontier) < getPriority((lowest), frontier)):
             lowest=left(x)
             
-        if right(x) < len(frontier) and getPriority(right(x)) < getPriority(lowest):
+        if right(x) < len(frontier) and getPriority(right(x), frontier) < getPriority(lowest, frontier):
             lowest=right(x)
         
         if lowest != x:
@@ -46,11 +45,21 @@ def MinHeapify(x, frontier=frontier, node_positions=node_positions):
 
             MinHeapify(lowest, frontier, node_positions)
 
-def MinheapifyParent(x, frontier=frontier, node_positions=node_positions):
-    while x>0 and getPriority(parent(x)) > getPriority(x):
-        MinHeapify(parent(x), frontier, node_positions)
-        x=parent(x)
-    return
+def MinheapifyParent(x, frontier, node_positions):
+    """Sift-Up operation"""
+    while x > 0:
+        p = parent(x)
+        if getPriority(p, frontier) > getPriority(x, frontier):
+
+            frontier[x], frontier[p] = frontier[p], frontier[x]
+            
+            node_positions[frontier[x].id] = x
+            node_positions[frontier[p].id] = p
+            
+            # Move up the tree
+            x = p
+        else:
+            break # Heap property is satisfied
 
 
 def HeapPush(node, frontier=frontier, node_positions=node_positions):
@@ -59,16 +68,19 @@ def HeapPush(node, frontier=frontier, node_positions=node_positions):
     MinheapifyParent(len(frontier)-1, frontier, node_positions)
     return
 
-def ExtractMin(frontier=frontier, node_positons=node_positions):
+def ExtractMin(frontier=frontier, node_positions=node_positions):
+    if len(frontier)==0:
+        return None
+    
     min = frontier[0]
 
     frontier[0] = frontier[-1]
-    node_positons[frontier[0].id] = 0
+    node_positions[frontier[0].id] = 0
 
     del frontier[-1]
-    del node_positons[min.id]
+    del node_positions[min.id]
 
-    MinHeapify(0, frontier, node_positons)
+    MinHeapify(0, frontier, node_positions)
 
     pass
     return min

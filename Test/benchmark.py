@@ -9,34 +9,50 @@ sys.path.append(parent_dir)
 from search import search, search_stats
 
 def run_benchmark():
-    # Hardcoded sample cases from sample_states.txt
-    cases = [
-        ("0C0 1D0 2G2 3B1 5H3 6A0 7E0 8F2 8", "Sample 1 (Easy)"),
-        ("0B1 1D0 2H2 3E1 4G0 5F3 7A0 8C0 3", "Sample 2 (Easy)"),
-        ("0B1 1D0 2F2 3A0 4E0 5G2 6H0 7C1 5", "Sample 3 (Easy)"),
-        ("0B2 1C0 3F1 4E0 5A0 6G1 7H0 8D3 4", "Sample 4 (Medium)"),
-        ("0F2 1A1 3H2 4B3 5E0 6D2 7C1 8G3 5", "Sample 5 (Hard)"),
-    ]
+    # We will load all test cases from testcases.txt in the same directory.
+    # If testcases.txt does not exist, we fall back to the default sample cases.
+    cases = []
     
-    # Try to load generated test cases if they exist
-    gen_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated_testcases.txt')
-    if os.path.exists(gen_path):
-        print("Found generated_testcases.txt, loading additional cases...")
+    # Path to testcases.txt
+    testcases_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'testcases.txt')
+    
+    # --- Format of testcases.txt ---
+    # - Lines starting with '#' are treated as comments and ignored.
+    # - Lines starting with '##' define the active level/difficulty (e.g., '## Starter', '## Junior').
+    # - Non-empty lines contain the configuration string. Any comments on the same line starting with '#' are stripped.
+    #
+    # Example format:
+    # ## Starter
+    # 0C0 1D0 2G2 3B1 5H3 6A0 7E0 8F2 8 # Challenge 1
+    # ## Junior
+    # 0B1 1D0 2F2 3A0 4E0 5G2 6H0 7C1 5 # Challenge 28
+    
+    if os.path.exists(testcases_path):
+        print(f"Loading test cases from {testcases_path}...")
         try:
-            with open(gen_path, 'r') as f:
-                current_cat = ""
+            with open(testcases_path, 'r') as f:
+                current_level = "Default"
                 for line in f:
                     line = line.strip()
-                    if line.startswith("## "):
-                        current_cat = line[3:]
+                    if line.startswith("##"):
+                        current_level = line[2:].strip()
                     elif line and not line.startswith("#"):
-                        # line format: "config # cost = X"
-                        parts = line.split("#")
-                        config = parts[0].strip()
+                        # Extract configuration before any inline comments
+                        config = line.split("#")[0].strip()
                         if config:
-                            cases.append((config, f"Gen: {current_cat}"))
+                            cases.append((config, current_level))
         except Exception as e:
-            print(f"Error reading generated test cases: {e}")
+            print(f"Error reading testcases.txt: {e}")
+            
+    if not cases:
+        print("testcases.txt not found or empty. Falling back to default booklet samples...")
+        cases = [
+            ("0C0 1D0 2G2 3B1 5H3 6A0 7E0 8F2 8", "Starter (Challenge 1)"),
+            ("0B1 1D0 2H2 3E1 4G0 5F3 7A0 8C0 3", "Starter (Challenge 4)"),
+            ("0B1 1D0 2F2 3A0 4E0 5G2 6H0 7C1 5", "Junior (Challenge 28)"),
+            ("0B2 1C0 3F1 4E0 5A0 6G1 7H0 8D3 4", "Master (Challenge 57)"),
+            ("0F2 1A1 3H2 4B3 5E0 6D2 7C1 8G3 5", "Wizard (Challenge 60)"),
+        ]
             
     print(f"Starting benchmark on {len(cases)} test cases...\n")
     
@@ -78,7 +94,7 @@ def run_benchmark():
         
     # Print the markdown table
     print("\n### Benchmark Results Table\n")
-    print("| Test Case | Difficulty | Optimal Cost | Algorithm | Nodes Expanded | Max Frontier Size | Execution Time (ms) |")
+    print("| Test Case | Category / Level | Optimal Cost | Algorithm | Nodes Expanded | Max Frontier Size | Execution Time (ms) |")
     print("|---|---|---|---|---|---|---|")
     for r in results:
         idx = r['index']

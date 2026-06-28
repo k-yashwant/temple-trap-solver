@@ -16,7 +16,7 @@ def manhattan_distance(node):
     c = p % 3
     return r + c
 
-def search(initial_state, algorithm='ucs'):
+def search(initial_state, algorithm='ucs', max_nodes = None):
     frontier.clear()
     node_positions.clear()
     search_stats['nodes_expanded'] = 0
@@ -57,6 +57,7 @@ def search(initial_state, algorithm='ucs'):
         
         node = ExtractMin()
         search_stats['nodes_expanded'] += 1
+
 
         actions, path_cost = GoalTest(node, tiles_map)
         if actions is not None:

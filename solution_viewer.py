@@ -3,6 +3,9 @@ from tkinter import font
 from PIL import Image, ImageTk
 import sys
 
+import os
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
 # --- Constants ---
 TILE_SIZE = 150  # The width and height of your tile images in pixels
 GRID_DIM = 3     # The grid is 3x3
@@ -70,7 +73,7 @@ class SolutionViewer:
         # tile_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'empty', 'player']
         try:
             for config in self.initial_state[:-1]:
-                filepath = f"./Tiles/{config[1]}.png"
+                filepath = os.path.join(base_dir, "Tiles", f"{config[1]}.png")
                 # Open the image with Pillow
                 image = Image.open(filepath).convert("RGBA")
                 # Resize to ensure consistency
@@ -84,7 +87,7 @@ class SolutionViewer:
                 
             static_images = ['empty', 'player', 'player_win'] # <-- CHANGE 1: ADDED 'player_won'
             for name in static_images:
-                filepath = f"./Tiles/{name}.png"
+                filepath = os.path.join(base_dir, "Tiles", f"{name}.png")
                 image = Image.open(filepath).convert("RGBA")
                 image = image.resize((TILE_SIZE, TILE_SIZE), Image.Resampling.LANCZOS)
                 self.pillow_images[name] = image

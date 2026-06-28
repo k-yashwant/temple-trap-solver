@@ -4,6 +4,9 @@ from tkinter import font
 from search import search
 from solution_viewer import SolutionViewer
 
+import os
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
 class TempleTrapGUI:
     """
     A class to create and manage the Temple Trap Game configuration GUI.
@@ -48,7 +51,8 @@ class TempleTrapGUI:
         tile_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         tile_images = []
         for name in tile_names:
-            img = Image.open(f"./Tiles/{name}.png").resize((100, 100))
+            filepath = os.path.join(base_dir, "Tiles", f"{name}.png")
+            img = Image.open(filepath).resize((100, 100))
             tile_images.append(ImageTk.PhotoImage(img))
 
         tile_label_font = font.Font(family='Helvetica', size=16)
