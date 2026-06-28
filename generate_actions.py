@@ -1,8 +1,7 @@
-from tiles import tiles_map
 import numpy as np
 from state_node import Node
 
-def initTiles(init_code, tiles_map=tiles_map):
+def initTiles(init_code, tiles_map):
     tiles_map[init_code[1]] = tiles_map[init_code[1]](int(init_code[2]))
 
 
@@ -89,7 +88,7 @@ def moveEmpty(node, pos, child_nodes):
         new_node.path_cost = node.path_cost + 1
         child_nodes.append(new_node)
 
-def movePlayerLeft(node, level, dir=LEFT):
+def movePlayerLeft(node, level, tiles_map, dir=LEFT):
     if node.player_position() not in {0, 3, 6}:
         current_tile = tiles_map[node.state[node.player_position()]]
         next_tile = tiles_map[node.state[node.player_position() - 1]]
@@ -125,7 +124,7 @@ def movePlayerLeft(node, level, dir=LEFT):
     else:
         return None
 
-def movePlayerRight(node, level, dir=RIGHT):
+def movePlayerRight(node, level, tiles_map, dir=RIGHT):
     if node.player_position() not in {2, 5, 8}:
         current_tile = tiles_map[node.state[node.player_position()]]
         next_tile = tiles_map[node.state[node.player_position() + 1]]
@@ -161,7 +160,7 @@ def movePlayerRight(node, level, dir=RIGHT):
     else:
         return None
 
-def movePlayerUp(node, level, dir=UP):
+def movePlayerUp(node, level, tiles_map, dir=UP):
     if node.player_position() not in {0, 1, 2}:
         current_tile = tiles_map[node.state[node.player_position()]]
         next_tile = tiles_map[node.state[node.player_position() - 3]]
@@ -197,7 +196,7 @@ def movePlayerUp(node, level, dir=UP):
     else:
         return None
 
-def movePlayerDown(node, level, dir=DOWN):
+def movePlayerDown(node, level, tiles_map, dir=DOWN):
     if node.player_position() not in {6, 7, 8}:
         current_tile = tiles_map[node.state[node.player_position()]]
         next_tile = tiles_map[node.state[node.player_position() + 3]]
@@ -233,7 +232,7 @@ def movePlayerDown(node, level, dir=DOWN):
     else:
         return None
 
-def changePlayerLevel(node):
+def changePlayerLevel(node, tiles_map):
     if tiles_map[node.state[node.player_position()]].piece == 'stair':
         new_node=Node()
         new_node.state = list(node.state)
@@ -247,7 +246,7 @@ def changePlayerLevel(node):
     else:
         return None
 
-def ActionSpace(node):
+def ActionSpace(node, tiles_map):
     child_nodes = []
 
     # when player is on ground level
@@ -259,7 +258,7 @@ def ActionSpace(node):
         move_player = [movePlayerLeft, movePlayerRight, movePlayerUp, movePlayerDown]
 
         for function in move_player:
-            child_node = function(node, 'ground')
+            child_node = function(node, 'ground', tiles_map)
             if child_node != None:
                 child_nodes.append(child_node)
 
@@ -268,12 +267,12 @@ def ActionSpace(node):
         move_player = [movePlayerLeft, movePlayerRight, movePlayerUp, movePlayerDown]
 
         for function in move_player:
-            child_node = function(node, 'top')
+            child_node = function(node, 'top', tiles_map)
             if child_node != None:
                 child_nodes.append(child_node)
                 
     #if player is on a stair, its level can be changed from ground to top
-    change_level = changePlayerLevel(node)
+    change_level = changePlayerLevel(node, tiles_map)
     if change_level != None:
         child_nodes.append(change_level)
     

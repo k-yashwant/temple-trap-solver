@@ -1,5 +1,6 @@
 from priority_queue import frontier, node_positions, HeapPush, ExtractMin, ChangeKey
 from generate_actions import initTiles, ActionSpace
+from tiles import tiles_map_template
 from state_node import Node
 from solution import GoalTest
 import time
@@ -20,10 +21,12 @@ def search(initial_state):
 
     # set the tiles positions and their rotations
     sum_positions = 0
+    tiles_map = {}
+    tiles_map.update(tiles_map_template)
     for i in range(8):
         start_node.state[int(initial_state[i][0])] = initial_state[i][1]
         sum_positions += int(initial_state[i][0])
-        initTiles(initial_state[i])
+        initTiles(initial_state[i], tiles_map=tiles_map)
 
     start_node.empty=36-sum_positions
     start_node.state[start_node.empty] = 'empty'
@@ -47,12 +50,12 @@ def search(initial_state):
         t=time.time()
         ExtractMin_time+=(t-s)
 
-        GoalTest(node)
+        GoalTest(node, tiles_map)
 
         explored.add(node.id)
 
         s=time.time()
-        child_nodes = ActionSpace(node)
+        child_nodes = ActionSpace(node, tiles_map)
         t=time.time()
         actionspace_time+=(t-s)
 

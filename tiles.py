@@ -120,6 +120,6 @@ class Empty:
         self.top = []
 
 
-tiles_map= {'A':TileA, 'B':TileB, 'C':TileC, 'D':TileD, 'E':TileE, 'F':TileF, 'G':TileG, 'H':TileH, 'empty':Empty(None)}
+tiles_map_template= {'A':TileA, 'B':TileB, 'C':TileC, 'D':TileD, 'E':TileE, 'F':TileF, 'G':TileG, 'H':TileH, 'empty':Empty(None)}
 
 

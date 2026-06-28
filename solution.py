@@ -1,11 +1,9 @@
 #Print the solution
 from generate_actions import LEFT
-from tiles import tiles_map
 import numpy as np
 
-states = []
-
 def TrackSolution(node):
+    states = []
     path_cost = node.path_cost + 1
     while True:
         prev_action = node.prev_action
@@ -25,7 +23,7 @@ def TrackSolution(node):
     
     return states, path_cost
 
-def GoalTest(node):
+def GoalTest(node, tiles_map):
     if node.player_level() == 1 and node.player_position() == 0 and any(np.array_equal(LEFT, x) for x in tiles_map[node.state[node.player_position()]].top):
         return TrackSolution(node)
     else:
