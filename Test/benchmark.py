@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import csv
 
 # Add parent directory to path so we can import search and search_stats
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -92,7 +93,35 @@ def run_benchmark():
         print(f"  A* : Cost={cost_astar}, Expanded={exp_astar}, MaxFrontier={front_astar}, Time={time_astar:.1f}ms")
         print("-" * 60)
         
-    # Print the markdown table
+    # --- Write Results to CSV ---
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'benchmark_results.csv')
+    try:
+        with open(csv_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            # Write Header
+            writer.writerow([
+                'Test Case', 'Challenge & Level', 'Optimal Cost',
+                'UCS Nodes Expanded', 'UCS Max Frontier Size', 'UCS Time (ms)',
+                'A* Nodes Expanded', 'A* Max Frontier Size', 'A* Time (ms)',
+                'Expanded Nodes Reduction (%)'
+            ])
+            # Write Rows
+            for r in results:
+                ucs_exp = r['ucs']['expanded']
+                astar_exp = r['astar']['expanded']
+                reduction = ((ucs_exp - astar_exp) / ucs_exp * 100) if ucs_exp > 0 else 0
+                
+                writer.writerow([
+                    r['index'], r['label'], r['cost'],
+                    ucs_exp, r['ucs']['frontier'], f"{r['ucs']['time']:.2f}",
+                    astar_exp, r['astar']['frontier'], f"{r['astar']['time']:.2f}",
+                    f"{reduction:.1f}%"
+                ])
+        print(f"\n📊 Saved benchmark results to CSV: {csv_path}")
+    except Exception as e:
+        print(f"Error saving CSV: {e}")
+
+    # Print the markdown table (optional console output)
     print("\n### Benchmark Results Table\n")
     print("| Test Case | Category / Level | Optimal Cost | Algorithm | Nodes Expanded | Max Frontier Size | Execution Time (ms) |")
     print("|---|---|---|---|---|---|---|")
